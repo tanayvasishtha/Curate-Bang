@@ -1,4 +1,4 @@
-import type { Config } from 'drizzle-kit';
+import type { Config } from 'drizzle-kit/pg';
 
 export default {
     schema: './lib/db/schema.ts',
