@@ -190,7 +190,7 @@ export default function Home() {
                                     <div className="text-center text-slate-500 py-12">
                                         <div className="text-4xl mb-4">💬</div>
                                         <p className="text-lg">Start a conversation to generate content</p>
-                                        <p className="text-sm mt-2">Type your content idea below and I'll create platform-optimized posts</p>
+                                        <p className="text-sm mt-2">Type your content idea below and I&apos;ll create platform-optimized posts</p>
                                     </div>
                                 ) : (
                                     messages.map(message => (
