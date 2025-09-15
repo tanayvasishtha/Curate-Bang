@@ -125,8 +125,8 @@ export default function ContentCard({ platform, content, onCopy }: ContentCardPr
                                 value={editedContent}
                                 onChange={(e) => setEditedContent(e.target.value)}
                                 className={`w-full h-32 p-3 border-2 rounded-xl resize-none focus:outline-none transition-colors ${isOverLimit
-                                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                                        : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                                    ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                                    : 'border-gray-200 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20'
                                     }`}
                             />
 

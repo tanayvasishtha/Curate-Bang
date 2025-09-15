@@ -23,7 +23,7 @@ export default function PromptInput({ value, onChange, placeholder }: PromptInpu
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder || "Enter your content idea here..."}
-                className="w-full h-32 p-4 border-2 border-gray-200 rounded-xl resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500"
+                className="w-full h-32 p-4 border-2 border-gray-200 rounded-xl resize-none focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20 focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500"
                 maxLength={500}
             />
 
