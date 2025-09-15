@@ -57,14 +57,24 @@ export default function Home() {
         setInput('');
 
         try {
-            // Simulate API call for now
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Call the real API
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt.trim(),
+                    platforms: selectedPlatforms
+                }),
+            });
 
-            // Generate mock content for each platform
-            const results = selectedPlatforms.map(platform => ({
-                platform,
-                content: generateMockContent(prompt, platform)
-            }));
+            if (!response.ok) {
+                throw new Error('Failed to generate content');
+            }
+
+            const data = await response.json();
+            const results = data.results;
 
             const assistantMessage: Message = {
                 id: (Date.now() + 1).toString(),
@@ -77,6 +87,21 @@ export default function Home() {
             setMessages(prev => [...prev, assistantMessage]);
         } catch (error) {
             console.error('Generation failed:', error);
+            // Fallback to mock content only if API fails
+            const fallbackResults = selectedPlatforms.map(platform => ({
+                platform,
+                content: generateMockContent(prompt, platform)
+            }));
+
+            const assistantMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                type: 'assistant',
+                content: `Generated content for ${selectedPlatforms.length} platform${selectedPlatforms.length > 1 ? 's' : ''} (using fallback):`,
+                results: fallbackResults,
+                timestamp: new Date(),
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
         } finally {
             setIsGenerating(false);
         }

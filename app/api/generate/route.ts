@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { generations } from '@/lib/db/schema';
 
 // Platform-specific content generators
 function generateTwitterContent(prompt: string): string {
@@ -51,14 +48,14 @@ async function callPerplexityAPI(prompt: string, platformContext: string): Promi
                 messages: [
                     {
                         role: 'system',
-                        content: `You are a professional social media content creator. Create engaging, platform-optimized content that follows best practices for ${platformContext}. Keep the tone professional yet engaging.`
+                        content: `You are a real professional with years of industry experience. You never sound like AI or marketing copy. You write from genuine personal experience, using specific examples from your work. You avoid buzzwords, promotional language, and generic advice. Everything you write sounds like it comes from someone who has actually done this work and learned from real projects and teams. Be authentic, practical, and conversational.`
                     },
                     {
                         role: 'user',
-                        content: `${platformContext}\n\nCreate content based on this idea: "${prompt}"`
+                        content: `${platformContext}\n\nTopic: "${prompt}"\n\nWrite content that sounds like it comes from your real professional experience with this topic. Include specific insights, personal observations, and practical examples.`
                     }
                 ],
-                max_tokens: 500,
+                max_tokens: 1000,
                 temperature: 0.7,
                 top_p: 0.9,
             }),
@@ -102,23 +99,6 @@ function generateFallbackContent(prompt: string, platformContext: string): strin
 
 export async function POST(request: NextRequest) {
     try {
-        const token = request.cookies.get('auth-token')?.value;
-
-        if (!token) {
-            return NextResponse.json(
-                { error: 'Not authenticated' },
-                { status: 401 }
-            );
-        }
-
-        const payload = verifyToken(token);
-        if (!payload) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            );
-        }
-
         const { prompt, platforms } = await request.json();
 
         if (!prompt || !platforms || !Array.isArray(platforms)) {
@@ -135,13 +115,19 @@ export async function POST(request: NextRequest) {
             let content: string;
 
             const platformConfigs = {
-                twitter: "Create a Twitter post (max 280 characters) with natural, conversational tone. No hashtags or emojis. Focus on genuine insights and questions.",
-                linkedin: "Create a LinkedIn post with professional tone, personal experience, and insights. Include exactly 5 relevant hashtags at the end.",
-                facebook: "Create a Facebook post with community-focused, conversational tone. Include exactly 5 relevant hashtags at the end.",
-                instagram: "Create an Instagram caption with authentic storytelling and personal reflection. Include exactly 5 relevant hashtags at the end.",
-                blog: "Create a comprehensive blog post with personal perspective, practical insights, and real-world examples. No hashtags or promotional language.",
-                youtube: "Create a YouTube video description with clear structure, timestamps, and practical value. Include exactly 5 relevant hashtags at the end.",
-                "video-script": "Create a detailed video script with timestamps, natural transitions, and conversational tone. Structure for educational content delivery."
+                twitter: "You are an experienced professional sharing genuine thoughts on Twitter. Write a conversational post (max 280 characters) that sounds like it comes from someone with real industry experience. No hashtags, no emojis, no promotional language. Share a personal insight or ask a thoughtful question that would spark genuine discussion. Write in first person as if you've actually worked with this topic.",
+
+                linkedin: "You are a seasoned professional sharing insights on LinkedIn based on years of real experience. Write a post that tells a story from your professional journey, includes specific examples from projects you've worked on, and offers genuine insights. Use 'I've observed', 'In my experience', 'Working with teams', etc. End with exactly 5 relevant professional hashtags. Make it sound like authentic professional reflection, not marketing content.",
+
+                facebook: "You are someone sharing thoughts with your community on Facebook. Write in a warm, conversational tone as if talking to friends and colleagues. Share personal experiences and genuine curiosity about the topic. Ask questions that invite real discussion. End with exactly 5 relevant hashtags. Avoid corporate speak - sound like a real person sharing something they find interesting.",
+
+                instagram: "You are sharing a personal moment of learning or discovery on Instagram. Write an authentic caption that reflects on your journey with this topic. Use storytelling that feels genuine and personal. Share what you've learned or what intrigues you. End with exactly 5 relevant hashtags. Sound like someone documenting their real experiences, not creating content for content's sake.",
+
+                blog: "You are an experienced professional writing a blog post based on real-world experience. Start with a personal anecdote about encountering this topic. Share specific insights from actual projects and teams you've worked with. Use phrases like 'When I first encountered...', 'Through working with various teams...', 'What I've learned from experience...'. Make it practical and grounded in reality. No hashtags, no promotional language - just genuine professional insights.",
+
+                youtube: "You are creating a YouTube video description for educational content based on your professional experience. Structure it with clear value proposition, practical takeaways, and helpful timestamps. Include resources and next steps. End with exactly 5 relevant hashtags. Write as someone who genuinely wants to help others learn from your experience.",
+
+                "video-script": "You are writing a video script for educational content. Create natural, conversational dialogue with smooth transitions. Include personal anecdotes and real examples. Use timestamps for clear structure. Write as if you're having a genuine conversation with someone who wants to learn. Include phrases like 'In my experience...', 'I've seen teams struggle with...', 'What I've learned is...'. Make it educational but personal and authentic."
             };
 
             const config = platformConfigs[platform as keyof typeof platformConfigs] ||
@@ -156,14 +142,6 @@ export async function POST(request: NextRequest) {
 
             results.push({ platform, content });
         }
-
-        // Save to database
-        const [generation] = await db.insert(generations).values({
-            userId: payload.userId,
-            prompt,
-            platforms,
-            results,
-        }).returning();
 
         return NextResponse.json({ results });
     } catch (error) {
