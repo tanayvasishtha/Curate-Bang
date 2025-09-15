@@ -8,15 +8,16 @@ A minimalist AI-driven content amplification platform that transforms a single i
 - **AI-Powered Content Creation**: Leverages Perplexity AI for intelligent, contextual content generation
 - **Real-time Processing**: Generate content in seconds with live feedback
 - **Professional UI**: Clean, minimalist interface built with modern design principles
-- **Secure Authentication**: User management with Convex Auth
+- **Secure Authentication**: JWT-based user authentication with bcrypt password hashing
 - **Generation History**: Track and manage your content creation history
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
-- **Backend**: Convex (real-time database and serverless functions)
-- **AI Integration**: Perplexity API
-- **Authentication**: Convex Auth
+- **Backend**: Next.js API Routes with PostgreSQL (Neon Database)
+- **Database**: Drizzle ORM with PostgreSQL
+- **AI Integration**: Perplexity AI API
+- **Authentication**: JWT-based authentication with bcrypt
 - **Deployment**: Vercel-ready
 
 ## Getting Started
@@ -26,6 +27,7 @@ A minimalist AI-driven content amplification platform that transforms a single i
 - Node.js 18+
 - npm or yarn
 - Perplexity API key
+- PostgreSQL database (Neon recommended)
 
 ### Installation
 
@@ -48,16 +50,20 @@ npm install
 cp .env.example .env.local
 ```
 
-Add your Perplexity API key to `.env.local`:
+Add your configuration to `.env.local`:
 
 ```
-PERPLEXITY_API_KEY=your_api_key_here
+DATABASE_URL=your_neon_database_url_here
+NEXTAUTH_SECRET=your_nextauth_secret_here
+PERPLEXITY_API_KEY=your_perplexity_api_key_here
+NODE_ENV=development
 ```
 
-4. Initialize Convex:
+4. Set up the database:
 
 ```bash
-npx convex dev
+npm run db:generate
+npm run db:push
 ```
 
 5. Start the development server:
@@ -79,10 +85,11 @@ curate-bang/
 ├── components/            # Reusable UI components
 │   ├── ui/               # Base UI components
 │   └── ...               # Feature-specific components
-├── convex/               # Backend functions and schema
-│   ├── schema.ts         # Database schema
-│   ├── actions.ts        # AI integration actions
-│   └── ...              # Other backend functions
+├── lib/                  # Core library functions
+│   ├── db/              # Database configuration and schema
+│   │   ├── index.ts     # Database connection
+│   │   └── schema.ts    # Database schema
+│   └── auth.ts          # Authentication utilities
 └── .kiro/               # Project specifications and design docs
 ```
 
@@ -102,7 +109,9 @@ The application integrates with Perplexity AI to generate platform-specific cont
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
-- `npx convex dev` - Start Convex development environment
+- `npm run db:generate` - Generate database migrations
+- `npm run db:push` - Push schema changes to database
+- `npm run db:studio` - Open Drizzle Studio for database management
 
 ### Contributing
 

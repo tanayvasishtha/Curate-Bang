@@ -9,7 +9,7 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center">
                     <span className="text-2xl font-bold text-slate-900">
-                        Curate<span className="ice-fire-blue">Bang</span>
+                        Curate<span className="text-blue-600">Bang</span>
                     </span>
                 </Link>
 
@@ -29,12 +29,16 @@ export default function Header() {
                 </nav>
 
                 <div className="flex items-center space-x-3">
-                    <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
-                        Sign In
-                    </Button>
-                    <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2 rounded-lg border border-slate-900">
-                        Start Free Trial
-                    </Button>
+                    <Link href="/login">
+                        <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                            Sign In
+                        </Button>
+                    </Link>
+                    <Link href="/signup">
+                        <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2 rounded-lg border border-slate-900">
+                            Start Free Trial
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </header>

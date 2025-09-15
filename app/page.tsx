@@ -152,7 +152,7 @@ export default function Home() {
             <section className="pt-20 pb-8 px-4">
                 <div className="max-w-4xl mx-auto text-center">
                     <h1 className="text-6xl font-bold text-slate-900 mb-6">
-                        Curate<span className="ice-fire-blue">Bang</span>
+                        Curate<span className="text-blue-600">Bang</span>
                     </h1>
                     <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                         Transform a single idea into high-quality, tailored content for multiple social media platforms with AI-powered precision.
